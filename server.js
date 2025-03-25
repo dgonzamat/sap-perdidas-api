@@ -25,6 +25,7 @@ const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Update CORS configuration
 app.use(cors({
@@ -264,13 +265,6 @@ app.listen(port, () => {
 // Server startup with error handling
 const server = app.listen(port, host, () => {
     console.log(`Server running at http://${host}:${port}`);
-}).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`FATAL: Port ${port} already in use`);
-        process.exit(1);
-    } else {
-        throw err;
-    }
 });
 
 // Graceful shutdown
