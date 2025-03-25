@@ -3,6 +3,7 @@ require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');  // Add at top with other requires
 
 // Server configuration
 const app = express();
@@ -39,13 +40,25 @@ const validateToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({ success: false, message: 'Autenticación requerida' });
+        console.error(`[SECURITY] Invalid auth header from ${req.ip}`);
+        return res.status(401).json({ 
+            success: false, 
+            message: 'Autenticación requerida' 
+        });
     }
     
     const token = authHeader.substring(7);
     
-    if (token !== AUTH_TOKEN) {
-        return res.status(401).json({ success: false, message: 'Token inválido' });
+    // Use timing-safe comparison
+    if (!crypto.timingSafeEqual(
+        Buffer.from(token), 
+        Buffer.from(AUTH_TOKEN)
+    )) {
+        console.error(`[SECURITY] Invalid token attempt from ${req.ip}`);
+        return res.status(401).json({ 
+            success: false, 
+            message: 'Token inválido' 
+        });
     }
     
     next();
