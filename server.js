@@ -1,6 +1,12 @@
 // Add this at the VERY TOP to ensure proper env loading
 require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
+
+// Render-specific configuration
+const port = process.env.PORT; // Use ONLY environment variable
+const host = '0.0.0.0';
+
+const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
@@ -252,4 +258,23 @@ app.get('/sap/confirmaciones', validateToken, (req, res) => {
 app.listen(port, () => {
   console.log(`Simulador de API SAP para Control de Pérdidas ejecutándose en puerto ${port}`);
   console.log(`URL base: http://localhost:${port}/sap`);
+});
+
+// Server startup with error handling
+const server = app.listen(port, host, () => {
+    console.log(`Server running at http://${host}:${port}`);
+}).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`FATAL: Port ${port} already in use`);
+        process.exit(1);
+    } else {
+        throw err;
+    }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    server.close(() => {
+        console.log('Server shutdown');
+    });
 });
