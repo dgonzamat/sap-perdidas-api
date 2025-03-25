@@ -2,14 +2,15 @@ services:
   - type: web
     name: sap-perdidas-api
     runtime: node
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: node server.js
-    env: node
     envVars:
       - key: PORT
         value: 10000
       - key: NODE_ENV
         value: production
+      - key: AUTH_TOKEN
+        generateValue: true
     advanced:
       forceHttps: true
       autoDeploy: true

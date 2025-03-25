@@ -14,8 +14,9 @@ const { v4: uuidv4 } = require('uuid');
 // Configuración del servidor
 const app = express();
 // Modify port configuration to include explicit host
+// Modified server startup with Render compatibility
 const port = process.env.PORT || 3002;
-const host = '0.0.0.0';  // Required for Render deployment
+const host = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
 
 app.listen(port, host, () => {
     console.log(`Server running at http://${host}:${port}`);
