@@ -35,7 +35,7 @@ app.get('/sap/health', (req, res) => {
 const ordenes = [];
 const confirmaciones = [];
 
-// Middleware de validación de token
+// Middleware de validación de token - MODIFICADO PARA EVITAR ERROR DE BUFFER
 const validateToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
     
@@ -49,19 +49,24 @@ const validateToken = (req, res, next) => {
     
     const token = authHeader.substring(7);
     
-    // Use timing-safe comparison
-    if (!crypto.timingSafeEqual(
-        Buffer.from(token), 
-        Buffer.from(AUTH_TOKEN)
-    )) {
-        console.error(`[SECURITY] Invalid token attempt from ${req.ip}`);
-        return res.status(401).json({ 
-            success: false, 
-            message: 'Token inválido' 
+    try {
+        // Comparación simple que evita el error de longitud de buffer
+        if (token !== AUTH_TOKEN) {
+            console.error(`[SECURITY] Invalid token attempt from ${req.ip}`);
+            return res.status(401).json({ 
+                success: false, 
+                message: 'Token inválido' 
+            });
+        }
+        
+        next();
+    } catch (error) {
+        console.error(`[ERROR] Token validation error: ${error.message}`);
+        return res.status(500).json({
+            success: false,
+            message: 'Error interno del servidor'
         });
     }
-    
-    next();
 };
 
 // Endpoint raíz
