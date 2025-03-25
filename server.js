@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 // Modify port configuration to include explicit host
 const port = process.env.PORT || 3002;
-const host = '127.0.0.1';  // Explicit localhost IP
+const host = '0.0.0.0';  // Required for Render deployment
 
 app.listen(port, host, () => {
     console.log(`Server running at http://${host}:${port}`);
