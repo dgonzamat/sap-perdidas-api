@@ -1,27 +1,5 @@
-# Dependencies
-node_modules/
-
-# Environment variables
+# Add these lines if missing
 .env
-.env.local
-.env.*.local
-
-# Logs
-logs
-*.log
-npm-debug.log*
-
-# Runtime data
-pids
-*.pid
-*.seed
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
+node_modules/
 .DS_Store
-Thumbs.db
+.idea/

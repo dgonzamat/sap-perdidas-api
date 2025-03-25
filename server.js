@@ -2,7 +2,6 @@
 require('dotenv').config({ path: __dirname + '/.env' });
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
 
 // Server configuration
@@ -13,9 +12,8 @@ const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
 
-// Update CORS configuration
+// CORS configuration
 app.use(cors({
   origin: process.env.CORS_ORIGINS || 'http://localhost:3000', // Allow specific origins
   methods: ['GET', 'POST', 'PUT'], // Allowed HTTP methods
@@ -55,7 +53,7 @@ const validateToken = (req, res, next) => {
 
 // Endpoint raíz
 app.get('/', (req, res) => {
-    res.json({
+    res.status(200).json({
         success: true,
         message: 'API Simulador SAP para CGE - Control de Pérdidas',
         version: '1.0.0'
@@ -64,7 +62,7 @@ app.get('/', (req, res) => {
 
 // Endpoint informativo de SAP
 app.get('/sap', (req, res) => {
-    res.json({
+    res.status(200).json({
         success: true,
         message: 'API Simulador SAP para Control de Pérdidas',
         endpoints: [
@@ -228,7 +226,7 @@ app.post('/sap/confirmacion', validateToken, (req, res) => {
 
 // Endpoint para consultar órdenes (útil para debugging)
 app.get('/sap/ordenes', validateToken, (req, res) => {
-    res.json({
+    res.status(200).json({
         success: true,
         count: ordenes.length,
         data: ordenes
@@ -237,7 +235,7 @@ app.get('/sap/ordenes', validateToken, (req, res) => {
 
 // Endpoint para consultar confirmaciones (útil para debugging)
 app.get('/sap/confirmaciones', validateToken, (req, res) => {
-    res.json({
+    res.status(200).json({
         success: true,
         count: confirmaciones.length,
         data: confirmaciones
